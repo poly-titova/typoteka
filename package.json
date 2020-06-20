@@ -1,0 +1,16 @@
+{
+  "name": "buy-and-sell",
+  "version": "1.0.0",
+  "description": "Куплю. Продам",
+  "main": "./src/service/service.js",
+  "scripts": {
+    "test": "npm run eslint",
+    "eslint": "eslint --ext .js src/"
+  },
+  "author": "Poly Titova",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "7.2.0",
+    "eslint-config-htmlacademy": "0.5.2"
+  }
+}
