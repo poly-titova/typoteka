@@ -67,10 +67,22 @@ const CATEGORIES = [
 const generateOffers = (count) => (
   Array(count).fill({}).map(() => ({
     category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]],
-    description: shuffle(SENTENCES).slice(1, 5).join(` `),
+    announce: shuffle(SENTENCES).slice(1, 5).join(` `),
+
     title: TITLES[getRandomInt(0, TITLES.length - 1)]
   }))
 );
+
+// Функция из модуля fs
+const makeMockData = (filename, data) => {
+  fs.writeFileSync(filename, data, err => {
+    if (err) {
+      console.error(`Can't write data to file`);
+    }
+
+    console.log(`The file has been saved!`);
+  });
+};
 
 // Опишем заготовку для новой команды
 module.exports = {
@@ -81,19 +93,6 @@ module.exports = {
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
     const content = JSON.stringify(generateOffers(countOffer));
 
-    const data = new Uint8Array(Buffer.from('Hello Node.js'));
-    fs.writeFile('mocks.js', data, (err) => {
-      if (err) throw err;
-      console.log('The file has been saved!');
-    });
-
-
-    fs.writeFile(FILE_NAME, content, (err) => {
-      if (err) {
-        return console.error(`Can't write data to file...`);
-      }
-
-      return console.info(`Operation success. File created.`);
-    });
+    makeMockData(FILE_NAME, content);
   }
 }
