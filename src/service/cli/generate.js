@@ -63,12 +63,24 @@ const CATEGORIES = [
   'Железо'
 ];
 
+// Формирование даты
+const getRandomDate = () => {
+  let currentDate = new Date();
+  let month = getRandomInt(currentDate.getMonth() - 3, currentDate.getMonth());
+  let day = getRandomInt(1, 31);
+  let hour = getRandomInt(0, 23);
+  let minutes = getRandomInt(0, 59);
+  let startDate = new Date(currentDate.getFullYear(), month, day, hour, minutes);
+  return new Date(startDate);
+};
+
 // Основная функция для формирования объявлений
 const generateOffers = (count) => (
   Array(count).fill({}).map(() => ({
     category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]],
     announce: shuffle(SENTENCES).slice(1, 5).join(` `),
-
+    fullText: shuffle(SENTENCES).slice(0, getRandomInt(1, SENTENCES.length - 1)).join(` `),
+    createdDate: getRandomDate(),
     title: TITLES[getRandomInt(0, TITLES.length - 1)]
   }))
 );
