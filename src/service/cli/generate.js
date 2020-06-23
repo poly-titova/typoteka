@@ -1,5 +1,8 @@
 'use strict';
 
+// Подключение getRandomDate
+const {getRandomDate} = require(`../../getRandomDate`);
+
 // Подключаем модуль `fs`
 const fs = require(`fs`);
 
@@ -62,17 +65,6 @@ const CATEGORIES = [
   'Программирование',
   'Железо'
 ];
-
-// Формирование даты
-const getRandomDate = () => {
-  let currentDate = new Date();
-  let month = getRandomInt(currentDate.getMonth() - 3, currentDate.getMonth());
-  let day = getRandomInt(1, 31);
-  let hour = getRandomInt(0, 23);
-  let minutes = getRandomInt(0, 59);
-  let startDate = new Date(currentDate.getFullYear(), month, day, hour, minutes);
-  return new Date(startDate);
-};
 
 // Основная функция для формирования объявлений
 const generateOffers = (count) => (
