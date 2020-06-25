@@ -14,6 +14,7 @@ const {
 
 // Первым шагом опишем все необходимые константы
 const DEFAULT_COUNT = 1;
+const MAX_COUNT = 1000;
 const FILE_NAME = `mocks.json`;
 
 const TITLES = [
@@ -69,11 +70,11 @@ const CATEGORIES = [
 // Основная функция для формирования объявлений
 const generateOffers = (count) => (
   Array(count).fill({}).map(() => ({
-    category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]],
+    title: TITLES[getRandomInt(0, TITLES.length - 1)],
+    createdDate: getRandomDate(),
     announce: shuffle(SENTENCES).slice(1, 5).join(` `),
     fullText: shuffle(SENTENCES).slice(getRandomInt(0, SENTENCES.length - 1)).join(` `),
-    createdDate: getRandomDate(),
-    title: TITLES[getRandomInt(0, TITLES.length - 1)]
+    category: [shuffle(CATEGORIES).slice(getRandomInt(0, CATEGORIES.length - 1))],
   }))
 );
 
@@ -96,6 +97,10 @@ module.exports = {
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
     const content = JSON.stringify(generateOffers(countOffer));
+
+    if (count > MAX_COUNT) {
+      return console.log(`Не больше 1000 публикаций.`);
+    }
 
     makeMockData(FILE_NAME, content);
   }
