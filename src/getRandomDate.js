@@ -11,7 +11,7 @@ const dayInThePast = new Date(
 const pad = (number) => `${number}`.padStart(2, `0`);
 
 const format = (date) =>
-  [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+  [date.getFullYear(), date.getMonth(), date.getDate()]
     .map((num) => pad(num))
     .join(`-`) +
   ` ` +

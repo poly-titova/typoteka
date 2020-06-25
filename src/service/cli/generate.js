@@ -71,20 +71,20 @@ const generateOffers = (count) => (
   Array(count).fill({}).map(() => ({
     category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]],
     announce: shuffle(SENTENCES).slice(1, 5).join(` `),
-    fullText: shuffle(SENTENCES).slice(0, getRandomInt(1, SENTENCES.length - 1)).join(` `),
+    fullText: shuffle(SENTENCES).slice(getRandomInt(0, SENTENCES.length - 1)).join(` `),
     createdDate: getRandomDate(),
     title: TITLES[getRandomInt(0, TITLES.length - 1)]
   }))
 );
 
 // Функция из модуля fs
-const makeMockData = (filename, data) => {
-  fs.writeFileSync(filename, data, err => {
+const makeMockData = (filename, content) => {
+  fs.writeFile(filename, content, (err) => {
     if (err) {
-      console.error(`Can't write data to file`);
+      return console.error(`Can't write data to file`);
     }
 
-    console.log(`The file has been saved!`);
+    return console.log(`The file has been saved!`);
   });
 };
 
@@ -99,4 +99,4 @@ module.exports = {
 
     makeMockData(FILE_NAME, content);
   }
-}
+};
