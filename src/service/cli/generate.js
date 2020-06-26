@@ -15,6 +15,10 @@ const {
 // Первым шагом опишем все необходимые константы
 const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
+const ANNOUNCE_SENTENCES_RESTRICT = {
+  min: 1,
+  max: 5
+};
 const FILE_NAME = `mocks.json`;
 
 const TITLES = [
@@ -72,9 +76,9 @@ const generateOffers = (count) => (
   Array(count).fill({}).map(() => ({
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
     createdDate: getRandomDate(),
-    announce: shuffle(SENTENCES).slice(1, 5).join(` `),
-    fullText: shuffle(SENTENCES).slice(getRandomInt(0, SENTENCES.length - 1)).join(` `),
-    category: [shuffle(CATEGORIES).slice(getRandomInt(0, CATEGORIES.length - 1))],
+    announce: shuffle(SENTENCES.slice()).slice(ANNOUNCE_SENTENCES_RESTRICT.min, ANNOUNCE_SENTENCES_RESTRICT.max).join(` `),
+    fullText: shuffle(SENTENCES.slice()).slice(getRandomInt(0, SENTENCES.length - 1)).join(` `),
+    category: shuffle(CATEGORIES.slice()).slice(getRandomInt(0, CATEGORIES.length - 1)),
   }))
 );
 
