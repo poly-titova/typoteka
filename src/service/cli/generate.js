@@ -4,7 +4,7 @@
 const {getRandomDate} = require(`../../getRandomDate`);
 
 // Подключаем модуль `fs`
-const fs = require(`fs`);
+const fs = require(`fs`).promises;
 
 // Подключение chalk
 const chalk = require(`chalk`);
@@ -86,14 +86,13 @@ const generateOffers = (count) => (
 );
 
 // Функция из модуля fs
-const makeMockData = (filename, content) => {
-  fs.writeFile(filename, content, (err) => {
-    if (err) {
-      console.error(chalk.red(`Can't write data to file`));
-    }
-
+const makeMockData = async (filename, content) => {
+  try {
+    await fs.writeFile(filename, content);
     console.log(chalk.green(`The file has been saved!`));
-  });
+  } catch (err) {
+    console.error(chalk.red(`Can't write data to file`));
+  } 
 };
 
 // Опишем заготовку для новой команды
