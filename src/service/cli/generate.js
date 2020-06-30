@@ -6,6 +6,9 @@ const {getRandomDate} = require(`../../getRandomDate`);
 // Подключаем модуль `fs`
 const fs = require(`fs`);
 
+// Подключение chalk
+const chalk = require(`chalk`);
+
 // Обращение к utils.js
 const {
   getRandomInt,
@@ -86,10 +89,10 @@ const generateOffers = (count) => (
 const makeMockData = (filename, content) => {
   fs.writeFile(filename, content, (err) => {
     if (err) {
-      return console.error(`Can't write data to file`);
+      console.error(chalk.red(`Can't write data to file`));
     }
 
-    return console.log(`The file has been saved!`);
+    console.log(chalk.green(`The file has been saved!`));
   });
 };
 
@@ -103,7 +106,7 @@ module.exports = {
     const content = JSON.stringify(generateOffers(countOffer));
 
     if (count > MAX_COUNT) {
-      return console.log(`Не больше 1000 публикаций.`);
+      return console.log(chalk.red(`Не больше ${MAX_COUNT} публикаций.`));
     }
 
     makeMockData(FILE_NAME, content);
