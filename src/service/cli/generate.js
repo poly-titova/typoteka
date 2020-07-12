@@ -40,7 +40,7 @@ const readFiles = async (path) => {
 }
 
 // Основная функция для формирования объявлений
-const generateOffers = (count) => (
+const generateOffers = (count, CATEGORIES, SENTENCES, TITLES) => (
   Array(count).fill({}).map(() => ({
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
     createdDate: getRandomDate(),
@@ -64,10 +64,14 @@ const makeMockData = async (filename, content) => {
 module.exports = {
   name: `--generate`,
   // Описание метода
-  run(args) {
+  async run(args) {
     const [count] = args;
+    const CATEGORIES = await readFiles(pathCategories);
+    const SENTENCES = await readFiles(pathSentences);
+    const TITLES = await readFiles(pathTitles);
+
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const content = JSON.stringify(generateOffers(countOffer));
+    const content = JSON.stringify(generateOffers(countOffer, CATEGORIES, SENTENCES, TITLES));
 
     if (count > MAX_COUNT) {
       return console.log(chalk.red(`Не больше ${MAX_COUNT} публикаций.`));
