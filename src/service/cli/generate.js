@@ -29,6 +29,16 @@ const ANNOUNCE_SENTENCES_RESTRICT = {
 };
 const FILE_NAME = `mocks.json`;
 
+// Функция для чтения файлов и преобразовании полученных данных в нужном оформлении
+const readFiles = async (path) => {
+  try {
+    const result = await fs.readFile(path, `utf8`);
+    return result.split(`\n`);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 // Основная функция для формирования объявлений
 const generateOffers = (count) => (
   Array(count).fill({}).map(() => ({
