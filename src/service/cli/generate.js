@@ -15,6 +15,11 @@ const {
   shuffle,
 } = require(`../../utils`);
 
+// Подключение файлов с данными
+const pathCategories = './data/categories.txt';
+const pathSentences = './data/sentences.txt';
+const pathTitles = './data/titles.txt';
+
 // Первым шагом опишем все необходимые константы
 const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
