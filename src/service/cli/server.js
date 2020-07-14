@@ -1,12 +1,13 @@
 'use strict';
 
-// подключим дополнительные пакеты
 const chalk = require(`chalk`);
 const http = require(`http`);
 const fs = require(`fs`).promises;
 
-// подключим статус-коды
-const { HttpCode } = require(`../constants`);
+const { HttpCode } = require(`../../constants`);
+
+const DEFAULT_PORT = 3000;
+const FILENAME = `mocks.json`;
 
 const sendResponse = (res, statusCode, message) => {
   const template = `
