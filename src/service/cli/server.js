@@ -7,3 +7,9 @@ const fs = require(`fs`).promises;
 
 // подключим статус-коды
 const { HttpCode } = require(`../constants`);
+
+module.exports = {
+  name: `--server`,
+  run(args) {
+  }
+}
