@@ -10,6 +10,8 @@ const DEFAULT_PORT = 8080;
 
 const app = express();
 
+const path = require(`path`);
+
 app.use(`/articles`, articlesRoutes);
 app.use(`/my`, myRoutes);
 app.use(`/`, mainRoutes);
