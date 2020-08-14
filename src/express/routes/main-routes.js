@@ -6,7 +6,7 @@ const mainRoutes = new Router();
 mainRoutes.get(`/`, (req, res) => res.render(`main`));
 mainRoutes.get(`/register`, (req, res) => res.render(`sign-up`));
 mainRoutes.get(`/login`, (req, res) => res.render(`login`));
-mainRoutes.get(`/search`, (req, res) => res.send(`/search`));
+mainRoutes.get(`/search`, (req, res) => res.render(`search`));
 mainRoutes.get(`/categories`, (req, res) => res.send(`/categories`));
 
 module.exports = mainRoutes; 
