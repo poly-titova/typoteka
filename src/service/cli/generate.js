@@ -9,6 +9,12 @@ const fs = require(`fs`).promises;
 // Подключение chalk
 const chalk = require(`chalk`);
 
+// Подключение nanoid
+const { nanoid } = require(`nanoid`);
+
+// Подключение максимального значения id
+const { MAX_ID_LENGTH } = require(`../../constants`)
+
 // Обращение к utils.js
 const {
   getRandomInt,
@@ -43,6 +49,7 @@ const readFiles = async (path) => {
 // Основная функция для формирования объявлений
 const generateOffers = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) => (
   Array(count).fill({}).map(() => ({
+    id: nanoid(MAX_ID_LENGTH),
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
     createdDate: getRandomDate(),
     announce: shuffle(SENTENCES.slice()).slice(ANNOUNCE_SENTENCES_RESTRICT.min, ANNOUNCE_SENTENCES_RESTRICT.max).join(` `),
@@ -52,7 +59,8 @@ const generateOffers = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) => (
       Array(getRandomInt(0, COMMENTS.length - 1))
         .fill({})
         .map(() => ({
-          text: shuffle(COMMENTS).slice(0, getRandomInt(1, 3)).join(``)
+          text: shuffle(COMMENTS).slice(0, getRandomInt(1, 3)).join(` `),
+          id: nanoid(MAX_ID_LENGTH)
         }))
   }))
 );
