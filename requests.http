@@ -1,0 +1,2 @@
+# Список всех публикаций
+GET http://localhost:3000/api/articles HTTP/1.1
