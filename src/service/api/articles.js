@@ -48,4 +48,27 @@ module.exports = (app, articleService) => {
     return res.status(HttpCode.CREATED)
       .json(article);
   });
+
+  // редактирует определённую публикацию
+  route.put(`/:articleId`, articleValidator, (req, res) => {
+    // идентификатор желаемой публикации получаем из параметров
+    const { articleId } = req.params;
+    // пользуемся возможностями сервиса articleService,
+    // который передаётся в виде аргумента
+    // вызываем метод findOne, который должен 
+    // вернуть полную информацию о публикации
+    const existOffer = articleService.findOne(articleId);
+
+    if (!existOffer) {
+      return res.status(HttpCode.NOT_FOUND)
+        .send(`Not found with ${articleId}`);
+    }
+
+    // вызываем метод update, который должен 
+    // редактировать определённую публикацию
+    const updatedArticle = articleService.update(articleId, req.body);
+
+    return res.status(HttpCode.OK)
+      .json(updatedArticle);
+  });
 };

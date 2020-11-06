@@ -29,6 +29,14 @@ class ArticlesService {
     this._articles.push(newArticle);
     return newArticle;
   }
+
+  // метод который редактирует определённую публикацию
+  update(id, article) {
+    const oldArticle = this._articles
+      .find((item) => item.id === id);
+
+    return Object.assign(oldArticle, article);
+  }
 };
 
 module.exports = ArticlesService;
