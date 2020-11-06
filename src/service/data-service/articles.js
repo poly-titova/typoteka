@@ -12,7 +12,7 @@ class ArticlesService {
     return this._articles
   }
 
-  // метод который получает данные только для определённого объявления
+  // метод который возвращает полную информацию о публикации
   findOne(id) {
     return this._articles.find((item) => item.id === id);
   }
