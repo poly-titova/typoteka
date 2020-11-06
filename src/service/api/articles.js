@@ -2,6 +2,7 @@
 
 const { Router } = require(`express`);
 const { HttpCode } = require(`../../constants`);
+const articleValidator = require(`../middlewares/article-validator`);
 
 const route = new Router();
 
@@ -33,6 +34,18 @@ module.exports = (app, articleService) => {
     }
 
     return res.status(HttpCode.OK)
+      .json(article);
+  });
+
+  // создаёт новую публикацию
+  route.post(`/`, articleValidator, (req, res) => {
+    // пользуемся возможностями сервиса articleService,
+    // который передаётся в виде аргумента
+    // вызываем метод create, который должен 
+    // создать новую публикацию
+    const article = articleService.create(req.body);
+
+    return res.status(HttpCode.CREATED)
       .json(article);
   });
 };
