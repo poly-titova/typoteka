@@ -11,6 +11,11 @@ class ArticlesService {
   findAll() {
     return this._articles
   }
+
+  // метод который получает данные только для определённого объявления
+  findOne(id) {
+    return this._articles.find((item) => item.id === id);
+  }
 };
 
 module.exports = ArticlesService;
