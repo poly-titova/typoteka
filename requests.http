@@ -36,3 +36,6 @@ DELETE http://localhost:3000/api/articles/Gl2183 HTTP/1.1
 
 # Список комментариев определённой публикации
 GET http://localhost:3000/api/articles/Gl2183/comments HTTP/1.1
+
+# Удаление из определённой публикации комментарий с идентификатором
+DELETE http://localhost:3000/api/articles/Gl2183/comments/pPBi8g HTTP/1.1

@@ -105,4 +105,25 @@ module.exports = (app, articleService, commentService) => {
     res.status(HttpCode.OK)
       .json(comments);
   });
+
+  // удаляет из определённой публикации комментарий с идентификатором
+  route.delete(`/:articleId/comments/:commentId`, articleExist(articleService), (req, res) => {
+    // сохраняем публикацию, чтобы не искать в следующий раз
+    const {article} = res.locals;
+    // идентификатор желаемого комментария получаем из параметров
+    const {commentId} = req.params;
+    // пользуемся возможностями сервиса articleService,
+    // который передаётся в виде аргумента
+    // вызываем метод drop, который должен 
+    // удалять определённый комментарий
+    const deletedComment = commentService.drop(article, commentId);
+
+    if (!deletedComment) {
+      return res.status(HttpCode.NOT_FOUND)
+        .send(`Not found`);
+    }
+
+    return res.status(HttpCode.OK)
+      .json(deletedComment);
+  });
 };
