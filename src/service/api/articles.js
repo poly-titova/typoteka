@@ -3,10 +3,11 @@
 const { Router } = require(`express`);
 const { HttpCode } = require(`../../constants`);
 const articleValidator = require(`../middlewares/article-validator`);
+const articleExist = require(`../middlewares/article-exists`);
 
 const route = new Router();
 
-module.exports = (app, articleService) => {
+module.exports = (app, articleService, commentService) => {
   app.use(`/articles`, route);
 
   // возвращает список публикаций
@@ -89,5 +90,19 @@ module.exports = (app, articleService) => {
 
     return res.status(HttpCode.OK)
       .json(article);
+  });
+
+  // возвращает список комментариев определённой публикации
+  route.get(`/:articleId/comments`, articleExist(articleService), (req, res) => {
+    // сохраняем публикацию, чтобы не искать в следующий раз
+    const {article} = res.locals;
+    // пользуемся возможностями сервиса articleService,
+    // который передаётся в виде аргумента
+    // вызываем метод findAll, который должен 
+    // вернуть все комментарии
+    const comments = commentService.findAll(article);
+
+    res.status(HttpCode.OK)
+      .json(comments);
   });
 };

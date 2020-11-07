@@ -33,3 +33,6 @@ Content-Type: application/json
 
 # Удаление публикации с идентификатором￼
 DELETE http://localhost:3000/api/articles/Gl2183 HTTP/1.1
+
+# Список комментариев определённой публикации
+GET http://localhost:3000/api/articles/Gl2183/comments HTTP/1.1
