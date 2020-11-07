@@ -47,3 +47,6 @@ Content-Type: application/json
 {
   "text": "Это новый комментарий"
 }
+
+# Возврат результатов поиска 
+GET http://localhost:3000/api/search?query=Как HTTP/1.1
