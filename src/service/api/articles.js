@@ -4,6 +4,7 @@ const { Router } = require(`express`);
 const { HttpCode } = require(`../../constants`);
 const articleValidator = require(`../middlewares/article-validator`);
 const articleExist = require(`../middlewares/article-exists`);
+const commentValidator = require(`../middlewares/comment-validator`);
 
 const route = new Router();
 
@@ -125,5 +126,19 @@ module.exports = (app, articleService, commentService) => {
 
     return res.status(HttpCode.OK)
       .json(deletedComment);
+  });
+
+  // создаёт новый комментарий
+  route.post(`/:articleId/comments`, [articleExist(articleService), commentValidator], (req, res) => {
+    // сохраняем публикацию, чтобы не искать в следующий раз
+    const {article} = res.locals;
+    // пользуемся возможностями сервиса articleService,
+    // который передаётся в виде аргумента
+    // вызываем метод drop, который должен 
+    // удалять определённый комментарий
+    const comment = commentService.create(article, req.body);
+
+    return res.status(HttpCode.CREATED)
+      .json(comment);
   });
 };

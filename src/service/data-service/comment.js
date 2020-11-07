@@ -1,5 +1,8 @@
 'use strict';
 
+const { nanoid } = require(`nanoid`);
+const { MAX_ID_LENGTH } = require(`../../constants`);
+
 class CommentService {
   // метод который возвращает все комментарии
   findAll(article) {
@@ -20,7 +23,17 @@ class CommentService {
 
     return dropComment;
   }
-  
+
+  // метод который создаёт новую публикацию
+  // полученные данные мы просто добавляем в массив — хранилище
+  create(article, comment) {
+    const newComment = Object.assign({
+      id: nanoid(MAX_ID_LENGTH),
+    }, comment);
+
+    article.comments.push(newComment);
+    return comment;
+  }
 }
 
 module.exports = CommentService;
