@@ -8,7 +8,6 @@ const route = new Router();
 module.exports = (app, service) => {
   app.use(`/search`, route);
 
-  // возвращает результаты поиска
   route.get(`/`, (req, res) => {
     const { query = `` } = req.query;
 
@@ -17,10 +16,6 @@ module.exports = (app, service) => {
       return;
     }
 
-    // пользуемся возможностями сервиса articleService,
-    // который передаётся в виде аргумента
-    // вызываем метод findAll, который должен 
-    // вернуть все результаты поиска
     const searchResults = service.findAll(query);
     const searchStatus = searchResults.length > 0 ? HttpCode.OK : HttpCode.NOT_FOUND;
 
