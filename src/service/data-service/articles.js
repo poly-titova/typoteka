@@ -37,6 +37,18 @@ class ArticlesService {
 
     return Object.assign(oldArticle, article);
   }
+
+  // метод который удаляет определённую публикацию
+  drop(id) {
+    const article = this._articles.find((item) => item.id === id);
+
+    if (!article) {
+      return null;
+    }
+
+    this._articles = this._articles.filter((item) => item.id !== id);
+    return article;
+  }
 };
 
 module.exports = ArticlesService;

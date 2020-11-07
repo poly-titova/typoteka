@@ -71,4 +71,23 @@ module.exports = (app, articleService) => {
     return res.status(HttpCode.OK)
       .json(updatedArticle);
   });
+
+  // удаляет определённую публикацию
+  route.delete(`/:articleId`, (req, res) => {
+    // идентификатор желаемой публикации получаем из параметров
+    const { articleId } = req.params;
+    // пользуемся возможностями сервиса articleService,
+    // который передаётся в виде аргумента
+    // вызываем метод drop, который должен 
+    // удалять определённую публикацию
+    const article = articleService.drop(articleId);
+
+    if (!article) {
+      return res.status(HttpCode.NOT_FOUND)
+        .send(`Not found`);
+    }
+
+    return res.status(HttpCode.OK)
+      .json(article);
+  });
 };
