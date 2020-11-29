@@ -131,4 +131,7 @@ describe(`API returns offer based on search query`, () => {
       });
   });
 
+  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
+  test(`1 offer found`, () => expect(response.body.length).toBe(1));
+  test(`Offer has correct id`, () => expect(response.body[0].id).toBe(`p7cWcB`));
 });
