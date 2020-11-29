@@ -118,3 +118,17 @@ const mockData = [
 const app = express();
 app.use(express.json());
 search(app, new DataService(mockData));
+
+describe(`API returns offer based on search query`, () => {
+
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .get(`/search`)
+      .query({
+        query: `Ложка-поварёжка — нужный инструмент`
+      });
+  });
+
+});
