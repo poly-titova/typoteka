@@ -167,3 +167,34 @@ describe(`API returns an article with given id`, () => {
   test(`article's title is "Самый лучший музыкальный альбом этого год"`, () => expect(response.body.title).toBe(`Самый лучший музыкальный альбом этого год`));
 
 });
+
+describe(`API creates an article if data is valid`, () => {
+
+  const newArticle = {
+    category: `Котики`,
+    title: `Дам погладить котика`,
+    createdDate: `2020-09-30 18:50:32`,
+    announce: `Дам погладить котика.`,
+    fullText: `Дам погладить котика. Дорого. Не гербалайф`
+  };
+  const app = createAPI();
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .post(`/articles`)
+      .send(newArticle);
+  });
+
+
+  test(`Status code 201`, () => expect(response.statusCode).toBe(HttpCode.CREATED));
+
+
+  test(`Returns article created`, () => expect(response.body).toEqual(expect.objectContaining(newArticle)));
+
+  test(`Articles count is changed`, () => request(app)
+    .get(`/articles`)
+    .expect((res) => expect(res.body.length).toBe(6))
+  );
+
+});
