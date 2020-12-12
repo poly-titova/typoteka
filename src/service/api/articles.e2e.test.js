@@ -131,3 +131,39 @@ const createAPI = () => {
   articles(app, new DataService(cloneData), new CommentService());
   return app;
 };
+
+describe(`API returns a list of all articles`, () => {
+
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .get(`/articles`);
+  });
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
+
+  test(`Returns a list of 5 articles`, () => expect(response.body.length).toBe(5));
+
+  test(`First article's id equals "-_KcI6"`, () => expect(response.body[0].id).toBe(`-_KcI6`));
+
+});
+
+describe(`API returns an article with given id`, () => {
+
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .get(`/articles/-_KcI6`);
+  });
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
+
+  test(`article's title is "Самый лучший музыкальный альбом этого год"`, () => expect(response.body.title).toBe(`Самый лучший музыкальный альбом этого год`));
+
+});
