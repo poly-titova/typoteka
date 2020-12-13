@@ -222,3 +222,32 @@ describe(`API refuses to create an article if data is invalid`, () => {
   });
 
 });
+
+describe(`API changes existent article`, () => {
+  
+  const newArticle = {
+    category: `Котики`,
+    title: `Дам погладить котика`,
+    createdDate: `2020-09-30 18:50:32`,
+    announce: `Дам погладить котика.`,
+    fullText: `Дам погладить котика. Дорого. Не гербалайф`
+  };
+  const app = createAPI();
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .put(`/articles/-_KcI6`)
+      .send(newArticle);
+  });
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
+
+  test(`Returns changed article`, () => expect(response.body).toEqual(expect.objectContaining(newArticle)));
+
+  test(`Article is really changed`, () => request(app)
+    .get(`/articles/-_KcI6`)
+    .expect((res) => expect(res.body.title).toBe(`Дам погладить котика`))
+  );
+
+});
