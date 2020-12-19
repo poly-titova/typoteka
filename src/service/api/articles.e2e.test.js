@@ -251,3 +251,38 @@ describe(`API changes existent article`, () => {
   );
 
 });
+
+test(`API returns status code 404 when trying to change non-existent article`, () => {
+
+  const app = createAPI();
+
+  const validArticle = {
+    category: `Это`,
+    title: `валидный`,
+    createdDate: `2020-09-30 18:50:32`,
+    announce: `Дам погладить котика.`,
+    fullText: `Дам погладить котика. Дорого. Не гербалайф`
+  };
+
+  return request(app)
+    .put(`/articles/NOEXST`)
+    .send(validArticle)
+    .expect(HttpCode.NOT_FOUND);
+});
+
+test(`API returns status code 400 when trying to change an article with invalid data`, () => {
+
+  const app = createAPI();
+
+  const invalidArticle = {
+    category: `Это`,
+    title: `невалидный`,
+    createdDate: `2020-09-30 18:50:32`,
+    announce: `Дам погладить котика.`
+  };
+
+  return request(app)
+    .put(`/articles/NOEXST`)
+    .send(invalidArticle)
+    .expect(HttpCode.BAD_REQUEST);
+});
