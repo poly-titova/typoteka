@@ -3,9 +3,51 @@
 const { Router } = require(`express`);
 const articlesRoutes = new Router();
 const api = require(`../api`).getAPI();
+const { changeDateFormat } = require(`../../utils`);
+
+const multer = require(`multer`);
+const path = require(`path`);
+const { nanoid } = require(`nanoid`);
+
+const UPLOAD_DIR = `../upload/img/`;
+
+const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
+
+const storage = multer.diskStorage({
+  destination: uploadDirAbsolute,
+  filename: (req, file, cb) => {
+    const uniqueName = nanoid(10);
+    const extension = file.originalname.split(`.`).pop();
+    cb(null, `${uniqueName}.${extension}`);
+  }
+});
+
+const upload = multer({ storage });
 
 articlesRoutes.get(`/category/:id`, (req, res) => res.render(`articles-by-category`));
-articlesRoutes.get(`/add`, (req, res) => res.render(`new-post`));
+
+articlesRoutes.get(`/add`, async (req, res) => {
+  const categories = await api.getCategories();
+  res.render(`new-post`, { categories });
+});
+
+articlesRoutes.post(`/add`, upload.single(`avatar`), async (req, res) => {
+  const { body } = req;
+  const articleData = {
+    title: body.title,
+    createdDate: changeDateFormat(body.createdDate),
+    category: body.category || [],
+    announce: body.announce,
+    fullText: body.fullText
+  };
+  try {
+    await api.createArticle(articleData);
+    res.redirect(`/my`);
+  } catch (error) {
+    res.redirect(`back`);
+  }
+});
+
 articlesRoutes.get(`/edit/:id`, async (req, res) => {
   const { id } = req.params;
   const [article, categories] = await Promise.all([
@@ -14,6 +56,7 @@ articlesRoutes.get(`/edit/:id`, async (req, res) => {
   ]);
   res.render(`edit-post`, { article, categories });
 });
+
 articlesRoutes.get(`/:id`, (req, res) => res.render(`post`));
 
 module.exports = articlesRoutes;

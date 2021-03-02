@@ -9,7 +9,7 @@ block content
             h1 Новая публикация
             .new-publication__date-form
               h3 Дата публикации
-              form(action='#', method='POST')
+              form(action='/articles/add', method='POST')
                 .new-publication__date-block
                   label(for='new-publication-date', aria-label='Календарь')
                   input#new-publication-date(type='text', name='login', placeholder='21.03.2019')
@@ -18,7 +18,7 @@ block content
             | Закрыть
             | окно
           .new-publication__form.form
-            form(action='#', method='get')
+            form(action='/articles/add', method='get')
               .form__wrapper.form__wrapper--intro
                 .form__field
                   label
