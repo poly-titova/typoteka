@@ -35,10 +35,10 @@ articlesRoutes.post(`/add`, upload.single(`avatar`), async (req, res) => {
   const { body } = req;
   const articleData = {
     title: body.title,
-    createdDate: changeDateFormat(body.createdDate),
+    createdDate: body.date,
     category: body.category || [],
-    announce: body.announce,
-    fullText: body.fullText
+    announce: body.announcement,
+    fullText: body[`full-text`],
   };
   try {
     await api.createArticle(articleData);
