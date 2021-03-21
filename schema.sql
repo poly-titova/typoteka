@@ -29,3 +29,8 @@ CREATE TABLE comments(
   text text NOT NULL,
   created_at timestamp NOT NULL
 );
+
+CREATE TABLE article_categories(
+  article_id integer NOT NULL,
+  category_id integer NOT NULL
+);
