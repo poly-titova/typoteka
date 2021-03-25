@@ -29,3 +29,14 @@ INSERT INTO article_categories(article_id, category_id) VALUES
 (3, 2),
 (3, 3);
 ALTER TABLE article_categories ENABLE TRIGGER ALL;
+
+-- эти запросы необходимы для заполнения в таблицу с комментариями данными
+ALTER TABLE comments DISABLE TRIGGER ALL;
+INSERT INTO COMMENTS(text, user_id, article_id) VALUES
+('Это где ж такие красоты?', 1, 1),
+('Совсем немного...', 2, 1),
+('Согласен с автором!', 2, 2),
+('Мне кажется или я уже читал это где-то?', 1, 2),
+('Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.', 1, 3),
+('Давно не пользуюсь стационарными компьютерами. Ноутбуки победили.', 2, 3);
+ALTER TABLE comments ENABLE TRIGGER ALL;
