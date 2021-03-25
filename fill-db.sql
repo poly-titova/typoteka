@@ -18,3 +18,14 @@ INSERT INTO articles(title, announce, full_text, picture, user_id, created_at) V
 ('Как достигнуть успеха не вставая с кресла', 'Собрать камни бесконечности легко, если вы прирожденный герой.', 'Первая большая ёлка была установлена только в 1938 году. Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете.', 'item03.jpg', 1, '2020-03-17');
 -- после завершения операции вставки, включим обратно
 ALTER TABLE articles ENABLE TRIGGER ALL;
+
+-- этот запрос необходим для присвоения категорий публикациям
+ALTER TABLE article_categories DISABLE TRIGGER ALL;
+INSERT INTO article_categories(article_id, category_id) VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(2, 3),
+(3, 2),
+(3, 3);
+ALTER TABLE article_categories ENABLE TRIGGER ALL;
