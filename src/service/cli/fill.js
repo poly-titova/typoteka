@@ -95,5 +95,34 @@ module.exports = {
         avatar: `avatar2.jpg`
       }
     ];
+
+    // Преображажение массивов в строки
+    const articles = generateArticles(countArticle, titles, categories.length, users.length, sentences, commentSentences);
+
+    const comments = articles.flatMap((article) => article.comments);
+
+    const articleCategories = articles.map((article, index) => ({articleId: index + 1, categoryId: article.category[0]}));
+
+    const userValues = users.map(
+        ({email, passwordHash, firstName, lastName, avatar}) =>
+          `('${email}', '${passwordHash}', '${firstName}', '${lastName}', '${avatar}')`
+    ).join(`,\n`);
+
+    const categoryValues = categories.map((name) => `('${name}')`).join(`,\n`);
+
+    const articleValues = articles.map(
+        ({title, announce, full_text, picture, userId, created_at}) =>
+          `('${title}', '${announce}', '${full_text}', '${picture}', ${userId}, '${created_at}')`
+    ).join(`,\n`);
+
+    const articleCategoryValues = articleCategories.map(
+        ({articleId, categoryId}) =>
+          `(${articleId}, ${categoryId})`
+    ).join(`,\n`);
+
+    const commentValues = comments.map(
+        ({text, userId, articleId}) =>
+          `('${text}', ${userId}, ${articleId})`
+    ).join(`,\n`);
   }
 };
