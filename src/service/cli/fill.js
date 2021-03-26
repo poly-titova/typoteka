@@ -28,6 +28,10 @@ const ANNOUNCE_SENTENCES_RESTRICT = {
   min: 1,
   max: 5
 };
+const PictureRestrict = {
+  min: 0,
+  max: 16
+};
 const FILE_NAME = `fill-db.sql`;
 
 // Функция для чтения файлов и преобразовании полученных данных в нужном оформлении
@@ -51,6 +55,9 @@ const generateComments = (count, articleId, userCount, comments) => (
   }))
 );
 
+// Основная функция для формирования изображений
+const getPictureFileName = (number) => `item${number.toString().padStart(2, 0)}.jpg`;
+
 // Основная функция для формирования объявлений
 const generateArticles = (count, titles, categoryCount, userCount, sentences, comments) => (
   Array(count).fill({}).map((_, index) => ({
@@ -58,8 +65,8 @@ const generateArticles = (count, titles, categoryCount, userCount, sentences, co
     created_at: getRandomDate(),
     comments: generateComments(getRandomInt(1, MAX_COMMENTS), index + 1, userCount, comments),
     announce: shuffle(sentences).slice(ANNOUNCE_SENTENCES_RESTRICT.min, ANNOUNCE_SENTENCES_RESTRICT.max).join(` `),
-    full_text: shuffle(sentences).slice(getRandomInt(0, SENTENCES.length - 1)).join(` `),
-    picture: getPictureFileName(getRandomInt(PictureRestrict.MIN, PictureRestrict.MAX)),
+    full_text: shuffle(sentences).slice(getRandomInt(0, sentences.length - 1)).join(` `),
+    picture: getPictureFileName(getRandomInt(PictureRestrict.min, PictureRestrict.max)),
     title: titles[getRandomInt(0, titles.length - 1)],
     userId: getRandomInt(1, userCount)
   }))
@@ -124,5 +131,30 @@ module.exports = {
         ({text, userId, articleId}) =>
           `('${text}', ${userId}, ${articleId})`
     ).join(`,\n`);
+
+    const content = `
+    INSERT INTO users(email, password_hash, first_name, last_name, avatar) VALUES
+    ${userValues};
+    INSERT INTO categories(name) VALUES
+    ${categoryValues};
+    ALTER TABLE articles DISABLE TRIGGER ALL;
+    INSERT INTO articles(title, announce, full_text, picture, user_id, created_at) VALUES
+    ${articleValues};
+    ALTER TABLE articles ENABLE TRIGGER ALL;
+    ALTER TABLE article_categories DISABLE TRIGGER ALL;
+    INSERT INTO article_categories(article_id, category_id) VALUES
+    ${articleCategoryValues};
+    ALTER TABLE article_categories ENABLE TRIGGER ALL;
+    ALTER TABLE comments DISABLE TRIGGER ALL;
+    INSERT INTO COMMENTS(text, user_id, article_id) VALUES
+    ${commentValues};
+    ALTER TABLE comments ENABLE TRIGGER ALL;`;
+
+    try {
+      await fs.writeFile(FILE_NAME, content);
+      console.log(chalk.green(`Operation success. File created.`));          
+    } catch (err) {
+      console.error(chalk.red(`Can't write data to file...`));
+    }
   }
 };
