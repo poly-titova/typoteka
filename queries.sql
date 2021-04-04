@@ -42,3 +42,15 @@ FROM articles
   JOIN users ON users.id = articles.user_id
 WHERE articles.id = 1
   GROUP BY articles.id, users.id
+
+-- запрос для получения пяти свежих комментариев
+SELECT 
+  comments.id, 
+  comments.offer_id, 
+  users.first_name, 
+  users.last_name,
+  comments.text
+FROM comments
+  JOIN users ON comments.user_id = users.id
+  ORDER BY comments.created_at DESC
+  LIMIT 5
