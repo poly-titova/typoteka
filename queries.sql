@@ -54,3 +54,15 @@ FROM comments
   JOIN users ON comments.user_id = users.id
   ORDER BY comments.created_at DESC
   LIMIT 5
+
+-- запрос для получения комментариев к публикации
+SELECT 
+  comments.id, 
+  comments.offer_id, 
+  users.first_name, 
+  users.last_name,
+  comments.text
+FROM comments
+  JOIN users ON comments.user_id = users.id
+WHERE comments.offer_id = 1
+  ORDER BY comments.created_at DESC
