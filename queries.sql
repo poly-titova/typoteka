@@ -66,3 +66,8 @@ FROM comments
   JOIN users ON comments.user_id = users.id
 WHERE comments.offer_id = 1
   ORDER BY comments.created_at DESC
+
+-- запрос для обновления записи
+UPDATE articles
+SET title = 'Как я встретил Новый год'
+WHERE id = 1
