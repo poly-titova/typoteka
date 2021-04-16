@@ -5,6 +5,7 @@ const routes = require(`../api`);
 
 const { HttpCode, API_PREFIX } = require(`../../constants`);
 const { getLogger } = require(`../lib/logger`);
+const sequelize = require(`../lib/sequelize`);
 
 const logger = getLogger({ name: `api` });
 
@@ -36,6 +37,12 @@ app.use((err, _req, _res, _next) => {
 module.exports = {
   name: `--server`,
   async run(args) {
+    try {
+      await sequelize.authenticate();
+    } catch (err) {
+      process.exit(1);
+    }
+
     const [customPort] = args;
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
 
