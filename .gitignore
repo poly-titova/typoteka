@@ -3,3 +3,5 @@ node_modules/
 
 mocks.js
 mocks.json
+
+.env
