@@ -1,17 +1,25 @@
-'use strict';
+"use strict";
+
+const { Op } = require(`sequelize`);
+const Aliase = require(`../models/aliase`);
 
 class SearchService {
-  // конструктор принимает данные о всех публикациях
-  // и сохраняет их в одноимённое приватное свойство
-  constructor(articles) {
-    this._articles = articles;
+  constructor(sequelize) {
+    this._Article = sequelize.models.Article;
   }
 
-  // метод который возвращает все публикации
-  findAll(searchText) {
-    return this._articles.
-      filter((article) => article.title.includes(searchText));
+  async findAll(searchText) {
+    const articles = await this._Article.findAll({
+      where: {
+        title: {
+          [Op.substring]: searchText
+        }
+      },
+      include: [Aliase.CATEGORIES],
+    });
+    return articles.map((article) => article.get());
   }
+
 }
 
 module.exports = SearchService;
