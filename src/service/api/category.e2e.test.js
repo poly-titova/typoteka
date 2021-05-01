@@ -2,7 +2,9 @@
 
 const express = require(`express`);
 const request = require(`supertest`);
+const Sequelize = require(`sequelize`);
 
+const initDB = require(`../lib/init-db`);
 const category = require(`./category`);
 const DataService = require(`../data-service/category`);
 
@@ -120,9 +122,14 @@ const mockData = [
   }
 ]
 
+const mockDB = new Sequelize(`sqlite::memory:`, { logging: false });
+
 const app = express();
 app.use(express.json());
-category(app, new DataService(mockData));
+beforeAll(async () => {
+  await initDB(mockDB, { categories: mockCategories, articles: mockArticles });
+  category(app, new DataService(mockDB));
+});
 
 describe(`API returns category list`, () => {
 
