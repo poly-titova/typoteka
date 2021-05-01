@@ -9,11 +9,11 @@ const fs = require(`fs`).promises;
 // Подключение chalk
 const chalk = require(`chalk`);
 
-// Подключение nanoid
-const { nanoid } = require(`nanoid`);
-
-// Подключение максимального значения id
-const { MAX_ID_LENGTH } = require(`../../constants`)
+// Подключение модулей
+const { getLogger } = require(`../lib/logger`);
+const sequelize = require(`../lib/sequelize`);
+const defineModels = require(`../models`);
+const Aliase = require(`../models/aliase`);
 
 // Обращение к utils.js
 const {
@@ -29,12 +29,13 @@ const pathComments = './data/comments.txt';
 
 // Первым шагом опишем все необходимые константы
 const DEFAULT_COUNT = 1;
-const MAX_COUNT = 1000;
+const MAX_COMMENTS = 4;
 const ANNOUNCE_SENTENCES_RESTRICT = {
   min: 1,
   max: 5
 };
-const FILE_NAME = `mocks.json`;
+
+const logger = getLogger({});
 
 // Функция для чтения файлов и преобразовании полученных данных в нужном оформлении
 const readFiles = async (path) => {
@@ -46,22 +47,40 @@ const readFiles = async (path) => {
   }
 }
 
-// Основная функция для формирования объявлений
-const generateOffers = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) => (
+// Основная функция для формирования комментариев
+const generateComments = (count, comments) => (
   Array(count).fill({}).map(() => ({
-    id: nanoid(MAX_ID_LENGTH),
+    text: shuffle(comments)
+      .slice(0, getRandomInt(1, 3))
+      .join(` `),
+  }))
+);
+
+// Основная функция для формирования случайного массива
+const getRandomSubarray = (items) => {
+  items = items.slice();
+  let count = getRandomInt(1, items.length - 1);
+  const result = [];
+  while (count--) {
+    result.push(
+      ...items.splice(
+        getRandomInt(0, items.length - 1), 1
+      )
+    );
+  }
+  return result;
+};
+
+// Основная функция для формирования объявлений
+const generateArticles = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) => (
+  Array(count).fill({}).map(() => ({
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
     createdDate: getRandomDate(),
+    picture: getPictureFilename(getRandomInt(PictureRestrict.min, PictureRestrict.max)),
     announce: shuffle(SENTENCES.slice()).slice(ANNOUNCE_SENTENCES_RESTRICT.min, ANNOUNCE_SENTENCES_RESTRICT.max).join(` `),
     fullText: shuffle(SENTENCES.slice()).slice(getRandomInt(0, SENTENCES.length - 1)).join(` `),
-    category: shuffle(CATEGORIES.slice()).slice(getRandomInt(0, CATEGORIES.length - 1)),
-    comments:
-      Array(getRandomInt(0, COMMENTS.length - 1))
-        .fill({})
-        .map(() => ({
-          text: shuffle(COMMENTS).slice(0, getRandomInt(1, 3)).join(` `),
-          id: nanoid(MAX_ID_LENGTH)
-        }))
+    categories: getRandomSubarray(CATEGORIES),
+    comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments)
   }))
 );
 
@@ -77,22 +96,37 @@ const makeMockData = async (filename, content) => {
 
 // Опишем заготовку для новой команды
 module.exports = {
-  name: `--generate`,
+  name: `--filldb`,
   // Описание метода
   async run(args) {
-    const [count] = args;
+    try {
+      logger.info(`Trying to connect to database...`);
+      await sequelize.authenticate();
+    } catch (err) {
+      logger.error(`An error occured: ${err.message}`);
+      process.exit(1);
+    }
+    logger.info(`Connection to database established`);
+
+    const { Category, Article } = defineModels(sequelize);
+    await sequelize.sync({ force: true });
+
     const CATEGORIES = await readFiles(pathCategories);
     const SENTENCES = await readFiles(pathSentences);
     const TITLES = await readFiles(pathTitles);
     const COMMENTS = await readFiles(pathComments);
 
-    const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const content = JSON.stringify(generateOffers(countOffer, CATEGORIES, SENTENCES, TITLES, COMMENTS));
+    const categoryModels = await Category.bulkCreate(
+      CATEGORIES.map((item) => ({ name: item }))
+    );
 
-    if (count > MAX_COUNT) {
-      return console.log(chalk.red(`Не больше ${MAX_COUNT} публикаций.`));
-    }
-
-    makeMockData(FILE_NAME, content);
+    const [count] = args;
+    const countArticle = Number.parseInt(count, 10) || DEFAULT_COUNT;
+    const articles = generateArticles(countArticle, TITLES, categoryModels, SENTENCES, COMMENTS);
+    const articlePromises = articles.map(async (article) => {
+      const articleModel = await Article.create(article, { include: [Aliase.COMMENTS] });
+      await articleModel.addCategories(article.CATEGORIES);
+    });
+    await Promise.all(articlePromises);
   }
 };
