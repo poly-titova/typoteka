@@ -8,25 +8,26 @@ const commentValidator = require(`../middlewares/comment-validator`);
 
 module.exports = (app, articleService, commentService) => {
   const route = new Router();
-  
+
   app.use(`/articles`, route);
 
   // возвращает список публикаций
-  route.get(`/`, (req, res) => {
-    const articles = articleService.findAll();
-    res.status(HttpCode.OK)
-      .json(articles);
+  route.get(`/`, async (req, res) => {
+    const { comments } = req.query;
+    let articles = await articleService.findAll(comments);
+    res.status(HttpCode.OK).json(articles);
   });
 
   // возвращает полную информацию публикации
-  route.get(`/:articleId`, (req, res) => {
+  route.get(`/:articleId`, async (req, res) => {
     // идентификатор желаемой публикации получаем из параметров
     const { articleId } = req.params;
+    const { comments } = req.query;
     // пользуемся возможностями сервиса articleService,
     // который передаётся в виде аргумента
     // вызываем метод findOne, который должен 
     // полную информацию о публикации
-    const article = articleService.findOne(articleId);
+    const article = await articleService.findOne(articleId, comments);
 
     // если будет запрошенна информация о несуществующей публикации
     if (!article) {
@@ -40,49 +41,44 @@ module.exports = (app, articleService, commentService) => {
   });
 
   // создаёт новую публикацию
-  route.post(`/`, articleValidator, (req, res) => {
+  route.post(`/`, articleValidator, async (req, res) => {
     // пользуемся возможностями сервиса articleService,
     // который передаётся в виде аргумента
     // вызываем метод create, который должен 
     // создать новую публикацию
-    const article = articleService.create(req.body);
+    const article = await articleService.create(req.body);
 
     return res.status(HttpCode.CREATED)
       .json(article);
   });
 
   // редактирует определённую публикацию
-  route.put(`/:articleId`, articleValidator, (req, res) => {
+  route.put(`/:articleId`, articleValidator, async (req, res) => {
     // идентификатор желаемой публикации получаем из параметров
     const { articleId } = req.params;
     // пользуемся возможностями сервиса articleService,
     // который передаётся в виде аргумента
     // вызываем метод findOne, который должен 
     // вернуть полную информацию о публикации
-    const existOffer = articleService.findOne(articleId);
+    const updated = await articleService.update(articleId, req.body);
 
-    if (!existOffer) {
+    if (!updated) {
       return res.status(HttpCode.NOT_FOUND)
         .send(`Not found with ${articleId}`);
     }
 
-    // вызываем метод update, который должен 
-    // редактировать определённую публикацию
-    const updatedArticle = articleService.update(articleId, req.body);
-
-    return res.status(HttpCode.OK)
-      .json(updatedArticle);
+    return res.status(HttpCode.OK).send(`Updated`);
   });
 
   // удаляет определённую публикацию
-  route.delete(`/:articleId`, (req, res) => {
+  route.delete(`/:articleId`, async (req, res) => {
     // идентификатор желаемой публикации получаем из параметров
     const { articleId } = req.params;
     // пользуемся возможностями сервиса articleService,
     // который передаётся в виде аргумента
     // вызываем метод drop, который должен 
     // удалять определённую публикацию
-    const article = articleService.drop(articleId);
+    const article = await articleService.drop(articleId);
 
     if (!article) {
       return res.status(HttpCode.NOT_FOUND)
@@ -94,44 +90,42 @@ module.exports = (app, articleService, commentService) => {
   });
 
   // возвращает список комментариев определённой публикации
-  route.get(`/:articleId/comments`, articleExist(articleService), (req, res) => {
+  route.get(`/:articleId/comments`, articleExist(articleService), async (req, res) => {
     // сохраняем публикацию, чтобы не искать в следующий раз
-    const {article} = res.locals;
+    const { article } = req.params;
     // пользуемся возможностями сервиса articleService,
     // который передаётся в виде аргумента
     // вызываем метод findAll, который должен 
     // вернуть все комментарии
-    const comments = commentService.findAll(article);
+    const comments = await commentService.findAll(article);
 
     res.status(HttpCode.OK)
       .json(comments);
   });
 
   // удаляет из определённой публикации комментарий с идентификатором
-  route.delete(`/:articleId/comments/:commentId`, articleExist(articleService), (req, res) => {
-    // сохраняем публикацию, чтобы не искать в следующий раз
-    const {article} = res.locals;
+  route.delete(`/:articleId/comments/:commentId`, articleExist(articleService), async (req, res) => {
     // идентификатор желаемого комментария получаем из параметров
-    const {commentId} = req.params;
+    const { commentId } = req.params;
     // пользуемся возможностями сервиса articleService,
     // который передаётся в виде аргумента
     // вызываем метод drop, который должен 
     // удалять определённый комментарий
-    const deletedComment = commentService.drop(article, commentId);
+    const deleted = await commentService.drop(article, commentId);
 
-    if (!deletedComment) {
+    if (!deleted) {
       return res.status(HttpCode.NOT_FOUND)
         .send(`Not found`);
     }
 
     return res.status(HttpCode.OK)
-      .json(deletedComment);
+      .json(deleted);
   });
 
   // создаёт новый комментарий
   route.post(`/:articleId/comments`, [articleExist(articleService), commentValidator], (req, res) => {
     // сохраняем публикацию, чтобы не искать в следующий раз
-    const {article} = res.locals;
+    const { article } = res.locals;
     // пользуемся возможностями сервиса articleService,
     // который передаётся в виде аргумента
     // вызываем метод drop, который должен 
