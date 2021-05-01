@@ -8,7 +8,7 @@ const search = require(`../api/search`);
 const getMockData = require(`../lib/get-mock-data`);
 
 const {
-  ArticlesService,
+  ArticleService,
   CategoryService,
   CommentService,
   SearchService
@@ -18,7 +18,7 @@ const app = new Router();
 (async () => {
   const mockData = await getMockData();
 
-  articles(app, new ArticlesService(mockData), new CommentService());
+  articles(app, new ArticleService(mockData), new CommentService());
   category(app, new CategoryService(mockData));
   search(app, new SearchService(mockData));
 })();
