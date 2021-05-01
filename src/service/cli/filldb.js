@@ -1,7 +1,7 @@
 'use strict';
 
 // Подключение getRandomDate
-const {getRandomDate} = require(`../../getRandomDate`);
+const { getRandomDate } = require(`../../getRandomDate`);
 
 // Подключаем модуль `fs`
 const fs = require(`fs`).promises;
@@ -12,8 +12,7 @@ const chalk = require(`chalk`);
 // Подключение модулей
 const { getLogger } = require(`../lib/logger`);
 const sequelize = require(`../lib/sequelize`);
-const defineModels = require(`../models`);
-const Aliase = require(`../models/aliase`);
+const initDatabase = require(`../lib/init-db`);
 
 // Обращение к utils.js
 const {
@@ -84,16 +83,6 @@ const generateArticles = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) => (
   }))
 );
 
-// Функция из модуля fs
-const makeMockData = async (filename, content) => {
-  try {
-    await fs.writeFile(filename, content);
-    console.log(chalk.green(`The file has been saved!`));
-  } catch (err) {
-    console.error(chalk.red(`Can't write data to file`));
-  } 
-};
-
 // Опишем заготовку для новой команды
 module.exports = {
   name: `--filldb`,
@@ -108,25 +97,15 @@ module.exports = {
     }
     logger.info(`Connection to database established`);
 
-    const { Category, Article } = defineModels(sequelize);
-    await sequelize.sync({ force: true });
-
     const CATEGORIES = await readFiles(pathCategories);
     const SENTENCES = await readFiles(pathSentences);
     const TITLES = await readFiles(pathTitles);
     const COMMENTS = await readFiles(pathComments);
 
-    const categoryModels = await Category.bulkCreate(
-      CATEGORIES.map((item) => ({ name: item }))
-    );
-
     const [count] = args;
     const countArticle = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const articles = generateArticles(countArticle, TITLES, categoryModels, SENTENCES, COMMENTS);
-    const articlePromises = articles.map(async (article) => {
-      const articleModel = await Article.create(article, { include: [Aliase.COMMENTS] });
-      await articleModel.addCategories(article.CATEGORIES);
-    });
-    await Promise.all(articlePromises);
+    const articles = generateArticles(countArticle, TITLES, CATEGORIES, SENTENCES, COMMENTS);
+
+    return initDatabase(sequelize, { articles, categories });
   }
 };
