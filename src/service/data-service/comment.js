@@ -1,38 +1,30 @@
-'use strict';
-
-const { nanoid } = require(`nanoid`);
-const { MAX_ID_LENGTH } = require(`../../constants`);
+"use strict";
 
 class CommentService {
-  // метод который возвращает все комментарии
-  findAll(article) {
-    return article.comments;
+  constructor(sequelize) {
+    this._Article = sequelize.models.Article;
+    this._Comment = sequelize.models.Comment;
   }
 
-  // метод который удаляет из определённой публикации комментарий с идентификатором
-  drop(article, commentId) {
-    const dropComment = article.comments
-      .find((item) => item.id === commentId);
-
-    if (!dropComment) {
-      return null;
-    }
-
-    article.comments = article.comments
-      .filter((item) => item.id !== commentId);
-
-    return dropComment;
+  create(articleId, comment) {
+    return this._Comment.create({
+      articleId,
+      ...comment
+    });
   }
 
-  // метод который создаёт новую публикацию
-  // полученные данные мы просто добавляем в массив — хранилище
-  create(article, comment) {
-    const newComment = Object.assign({
-      id: nanoid(MAX_ID_LENGTH),
-    }, comment);
+  async drop(id) {
+    const deletedRows = this._Comment.destroy({
+      where: { id }
+    });
+    return !!deletedRows;
+  }
 
-    article.comments.push(newComment);
-    return comment;
+  findAll(articleId) {
+    return this._Comment.findAll({
+      where: { articleId },
+      raw: true
+    });
   }
 }
 
