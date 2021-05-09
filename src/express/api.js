@@ -21,7 +21,7 @@ class API {
 
   // методы для получения и отправки данных
   getArticles({ offset, limit, comments } = {}) {
-    return this._load(`/offers`, { params: { offset, limit, comments } });
+    return this._load(`/articles`, { params: { offset, limit, comments } });
   }
 
   getArticle(id, comments) {
