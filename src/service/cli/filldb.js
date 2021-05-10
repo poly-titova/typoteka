@@ -76,7 +76,7 @@ const generateArticles = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) => (
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
     createdDate: getRandomDate(),
     picture: getPictureFilename(getRandomInt(PictureRestrict.min, PictureRestrict.max)),
-    announce: shuffle(SENTENCES.slice()).slice(ANNOUNCE_SENTENCES_RESTRICT.min, ANNOUNCE_SENTENCES_RESTRICT.max).join(` `),
+    announce: shuffle(SENTENCES).slice(ANNOUNCE_SENTENCES_RESTRICT.min, ANNOUNCE_SENTENCES_RESTRICT.max).join(` `),
     fullText: shuffle(SENTENCES.slice()).slice(getRandomInt(0, SENTENCES.length - 1)).join(` `),
     categories: getRandomSubarray(CATEGORIES),
     comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments)
