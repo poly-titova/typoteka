@@ -2,6 +2,8 @@
 
 const { Router } = require(`express`);
 const { HttpCode } = require(`../../constants`);
+const schema = require(`../lib/schema`);
+const validation = require(`../middlewares/validation`)
 const articleValidator = require(`../middlewares/article-validator`);
 const articleExist = require(`../middlewares/article-exists`);
 const commentValidator = require(`../middlewares/comment-validator`);
@@ -57,6 +59,15 @@ module.exports = (app, articleService, commentService) => {
       .json(article);
   });
 
+  // -----
+  route.post(`/`, validation(schema), async (req, res) => {
+    const { body } = req;
+    res.json({
+      message: `A new article created.`,
+      data: body
+    });
+  });
+
   // редактирует определённую публикацию
   route.put(`/:articleId`, articleValidator, async (req, res) => {
     // идентификатор желаемой публикации получаем из параметров
@@ -73,6 +84,15 @@ module.exports = (app, articleService, commentService) => {
     }
 
     return res.status(HttpCode.OK).send(`Updated`);
+  });
+
+  // -----
+  route.put(`/:articleId`, validation(schema), async (req, res) => {
+    const { body } = req;
+    res.json({
+      message: `A article updated.`,
+      data: body
+    });
   });
 
   // удаляет определённую публикацию
