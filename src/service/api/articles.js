@@ -3,7 +3,8 @@
 const { Router } = require(`express`);
 const { HttpCode } = require(`../../constants`);
 const schema = require(`../lib/schema`);
-const validation = require(`../middlewares/validation`)
+const commentSchema = require(`../lib/comment-schema`);
+const validation = require(`../middlewares/validation`);
 const articleValidator = require(`../middlewares/article-validator`);
 const articleExist = require(`../middlewares/article-exists`);
 const commentValidator = require(`../middlewares/comment-validator`);
@@ -159,5 +160,14 @@ module.exports = (app, articleService, commentService) => {
 
     return res.status(HttpCode.CREATED)
       .json(comment);
+  });
+
+  // -----
+  route.post(`/:articleId/comments`, validation(commentSchema), async (req, res) => {
+    const { body } = req;
+    res.json({
+      message: `A new comment created.`,
+      data: body
+    });
   });
 };
