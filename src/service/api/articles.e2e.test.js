@@ -128,7 +128,7 @@ const mockData = [
 
 const createAPI = async () => {
   const mockDB = new Sequelize(`sqlite::memory:`, { logging: false });
-  await initDB(mockDB, { categories: mockCategories, articles: mockArticles });
+  await initDB(mockDB, { category: mockCategories, articles: mockArticles });
   app.use(express.json());
   articles(app, new DataService(mockDB), new CommentService(mockDB));
   return app;
@@ -342,4 +342,31 @@ test(`API refuses to delete non-existent comment`, () => {
     .delete(`/articles/-A8qxG/comments/NOEXST`)
     .expect(HttpCode.NOT_FOUND);
 
+});
+
+test(`When field type is wrong response code is 400`, async () => {
+
+  const badArticles = [
+    {...newArticle, picture: 12345},
+    {...newArticle, category: `Котики`}
+  ];
+  for (const badArticle of badArticles) {
+    await request(app)
+      .post(`/articles`)
+      .send(badArticle)
+      .expect(HttpCode.BAD_REQUEST);
+  }
+});
+
+test(`When field value is wrong response code is 400`, async () => {
+  const badArticles = [
+    {...newArticle, title: `too short`},
+    {...newArticle, categories: []}
+  ];
+  for (const badArticle of badArticles) {
+    await request(app)
+      .post(`/articles`)
+      .send(badArticle)
+      .expect(HttpCode.BAD_REQUEST);
+  }
 });
