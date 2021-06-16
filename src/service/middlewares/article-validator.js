@@ -1,17 +1,40 @@
 'use strict';
 
 const { HttpCode } = require(`../../constants`);
+const Joi = require(`joi`);
 
-const articleKeys = [`title`, `createdDate`, `announce`, `fullText`, `category`];
+const schema = Joi.object({
+  title: Joi.string()
+    .min(30)
+    .max(250)
+    .required(),
+
+  createdDate: Joi.string()
+    .isoDate(),
+
+  category: Joi.array()
+    .items(Joi.number()
+      .integer()
+      .positive())
+    .min(1)
+    .required(),
+
+  announce: Joi.string()
+    .min(30)
+    .max(250)
+    .required(),
+
+  fullText: Joi.string()
+    .max(1000)
+});
 
 module.exports = (req, res, next) => {
   const newArticle = req.body;
-  const keys = Object.keys(newArticle);
-  const keysExists = articleKeys.every((key) => keys.includes(key));
+  const {error} = schema.validate(newArticle);
 
-  if (!keysExists) {
-    res.status(HttpCode.BAD_REQUEST)
-      .send(`Bad request`);
+  if (error) {
+    return res.status(HttpCode.BAD_REQUEST)
+      .send(error.details.map((err) => err.message).join(`\n`));
   }
 
   next();
