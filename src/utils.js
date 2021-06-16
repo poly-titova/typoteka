@@ -19,3 +19,6 @@ module.exports.shuffle = (someArray) => {
 module.exports.changeDateFormat = (date) => {
   return `${date.split(`.`).reverse().join(`-`)}T${`00:00:00.000Z`}`;
 };
+
+// Функция для проверки аргумента на принадлежность к массиву
+module.exports.ensureArray = (value) => Array.isArray(value) ? value : [value];

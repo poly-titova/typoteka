@@ -16,6 +16,13 @@ const HttpCode = {
   BAD_REQUEST: 400,
 };
 
+module.exports.HttpMethod = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+}
+
 module.exports = {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,

@@ -3,7 +3,7 @@
 const { Router } = require(`express`);
 const articlesRoutes = new Router();
 const api = require(`../api`).getAPI();
-const { changeDateFormat } = require(`../../utils`);
+const { changeDateFormat, ensureArray } = require(`../../utils`);
 
 const multer = require(`multer`);
 const path = require(`path`);
@@ -34,12 +34,14 @@ articlesRoutes.get(`/add`, async (req, res) => {
 
 articlesRoutes.post(`/add`, upload.single(`avatar`), async (req, res) => {
   const { body } = req;
+  const { user } = req.session;
   const articleData = {
     title: body.title,
-    createdDate: body.date,
-    categories: body.category || [],
+    createdDate: changeDateFormat(body.date),
+    categories: ensureArray(body.category),
     announce: body.announcement,
     fullText: body[`full-text`],
+    userId: user.id
   };
   try {
     await api.createArticle(articleData);
