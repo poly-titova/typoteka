@@ -27,8 +27,9 @@ const upload = multer({ storage });
 articlesRoutes.get(`/category/:id`, (req, res) => res.render(`articles-by-category`));
 
 articlesRoutes.get(`/add`, async (req, res) => {
+  const { error } = req.query;
   const categories = await api.getCategories();
-  res.render(`new-post`, { categories });
+  res.render(`new-post`, { categories, error });
 });
 
 articlesRoutes.post(`/add`, upload.single(`avatar`), async (req, res) => {
@@ -45,6 +46,7 @@ articlesRoutes.post(`/add`, upload.single(`avatar`), async (req, res) => {
     res.redirect(`/my`);
   } catch (error) {
     res.redirect(`back`);
+    res.redirect(`/articles/add?error=${encodeURIComponent(error.response.data)}`);
   }
 });
 
