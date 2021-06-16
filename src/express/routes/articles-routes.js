@@ -54,11 +54,32 @@ articlesRoutes.post(`/add`, upload.single(`avatar`), async (req, res) => {
 
 articlesRoutes.get(`/edit/:id`, async (req, res) => {
   const { id } = req.params;
+  const { error } = req.query;
   const [article, categories] = await Promise.all([
     api.getArticle(id),
     api.getCategories()
   ]);
-  res.render(`edit-post`, { article, categories });
+  res.render(`edit-post`, { id, article, categories, error });
+});
+
+articlesRoutes.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+  const { body, file } = req;
+  const { id } = req.params;
+  const articleData = {
+    title: body.title,
+    createdDate: changeDateFormat(body.date),
+    categories: ensureArray(body.category),
+    announce: body.announcement,
+    fullText: body[`full-text`],
+    userId: user.id
+  };
+
+  try {
+    await api.editArticle(id, articleData);
+    res.redirect(`/my`);
+  } catch (error) {
+    res.redirect(`/articles/edit/${id}?error=${encodeURIComponent(error.response.data)}`);
+  }
 });
 
 articlesRoutes.get(`/:id`, async (req, res) => {
