@@ -84,8 +84,21 @@ articlesRoutes.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
 
 articlesRoutes.get(`/:id`, async (req, res) => {
   const { id } = req.params;
-  const offer = await api.getOffer(id, true);
-  res.render(`offers/ticket`, { offer });
+  const { error } = req.query;
+  const article = await api.getArticle(id, true);
+  res.render(`articles/post`, { article, id, error });
+});
+
+articlesRoutes.post(`/:id/comments`, async (req, res) => {
+  const { id } = req.params;
+  const { comment } = req.body;
+
+  try {
+    await api.createComment(id, { text: comment });
+    res.redirect(`/articles/${id}`);
+  } catch (error) {
+    res.redirect(`/articles/${id}?error=${encodeURIComponent(error.response.data)}`);
+  }
 });
 
 module.exports = articlesRoutes;
