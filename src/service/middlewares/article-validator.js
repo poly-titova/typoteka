@@ -25,7 +25,9 @@ const schema = Joi.object({
     .required(),
 
   fullText: Joi.string()
-    .max(1000)
+    .max(1000),
+
+  userId: Joi.number().integer().positive().required()  
 });
 
 module.exports = (req, res, next) => {
