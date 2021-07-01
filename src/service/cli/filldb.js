@@ -47,9 +47,10 @@ const readFiles = async (path) => {
 }
 
 // Основная функция для формирования комментариев
-const generateComments = (count, comments) => (
+const generateComments = (count, COMMENTS, USERS) => (
   Array(count).fill({}).map(() => ({
-    text: shuffle(comments)
+    user: USERS[getRandomInt(0, USERS.length - 1)].email,
+    text: shuffle(COMMENTS)
       .slice(0, getRandomInt(1, 3))
       .join(` `),
   }))
@@ -71,15 +72,16 @@ const getRandomSubarray = (items) => {
 };
 
 // Основная функция для формирования объявлений
-const generateArticles = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) => (
+const generateArticles = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS, USERS) => (
   Array(count).fill({}).map(() => ({
+    user: USERS[getRandomInt(0, USERS.length - 1)].email,
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
     createdDate: getRandomDate(),
     picture: getPictureFilename(getRandomInt(PictureRestrict.min, PictureRestrict.max)),
     announce: shuffle(SENTENCES).slice(ANNOUNCE_SENTENCES_RESTRICT.min, ANNOUNCE_SENTENCES_RESTRICT.max).join(` `),
     fullText: shuffle(SENTENCES.slice()).slice(getRandomInt(0, SENTENCES.length - 1)).join(` `),
     categories: getRandomSubarray(CATEGORIES),
-    comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments)
+    comments: generateComments(getRandomInt(1, MAX_COMMENTS), COMMENTS, USERS)
   }))
 );
 
@@ -101,11 +103,25 @@ module.exports = {
     const SENTENCES = await readFiles(pathSentences);
     const TITLES = await readFiles(pathTitles);
     const COMMENTS = await readFiles(pathComments);
+    const USERS = [
+      {
+        name: `Иван Иванов`,
+        email: `ivanov@example.com`,
+        passwordHash: await passwordUtils.hash(`ivanov`),
+        avatar: `avatar01.jpg`
+      },
+      {
+        name: `Пётр Петров`,
+        email: `petrov@example.com`,
+        passwordHash: await passwordUtils.hash(`petrov`),
+        avatar: `avatar02.jpg`
+      }
+    ];
 
     const [count] = args;
     const countArticle = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const articles = generateArticles(countArticle, TITLES, CATEGORIES, SENTENCES, COMMENTS);
+    const articles = generateArticles(countArticle, TITLES, CATEGORIES, SENTENCES, COMMENTS, USERS);
 
-    return initDatabase(sequelize, { articles, categories });
+    return initDatabase(sequelize, { articles, CATEGORIES, USERS });
   }
 };
