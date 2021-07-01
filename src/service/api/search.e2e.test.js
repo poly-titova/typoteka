@@ -10,6 +10,7 @@ const { HttpCode } = require(`../../constants`);
 
 const mockData = [
   {
+    "user": `ivanov@example.com`,
     "id": "p7cWcB",
     "title": "Ложка-поварёжка — нужный инструмент",
     "createdDate": "2020-10-21 22:42:03",
@@ -22,20 +23,24 @@ const mockData = [
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": "Совсем немного... Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.",
         "id": "w1Rlr9"
       },
       {
+        "user": `ivanov@example.com`,
         "text": "Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.",
         "id": "6Fgh6H"
       },
       {
+        "user": `petrov@example.com`,
         "text": "Совсем немного... Мне не нравится ваш стиль. Ощущение, что вы меня поучаете. Плюсую, но слишком много буквы!",
         "id": "VWbqiC"
       }
     ]
   },
   {
+    "user": `petrov@example.com`,
     "id": "W1aSyl",
     "title": "Борьба с прокрастинацией",
     "createdDate": "2020-10-15 18:46:47",
@@ -47,12 +52,14 @@ const mockData = [
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": "Это где ж такие красоты? Согласен с автором!",
         "id": "DY2RST"
       }
     ]
   },
   {
+    "user": `ivanov@example.com`,
     "id": "AofwlE",
     "title": "Учим HTML и CSS",
     "createdDate": "2020-09-04 15:40:06",
@@ -66,16 +73,19 @@ const mockData = [
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": "Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.",
         "id": "M2K9h-"
       },
       {
+        "user": `ivanov@example.com`,
         "text": "Мне кажется или я уже читал это где-то? Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.",
         "id": "yaKT4W"
       }
     ]
   },
   {
+    "user": `petrov@example.com`,
     "id": "qrbGtF",
     "title": "Ёлки. История деревьев",
     "createdDate": "2020-09-03 01:18:42",
@@ -86,12 +96,14 @@ const mockData = [
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": "Планируете записать видосик на эту тему? Это где ж такие красоты?",
         "id": "8a1Jj9"
       }
     ]
   },
   {
+    "user": `ivanov@example.com`,
     "id": "cF1d1H",
     "title": "Борьба с прокрастинацией",
     "createdDate": "2020-10-10 00:43:23",
@@ -102,14 +114,17 @@ const mockData = [
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": "Мне не нравится ваш стиль. Ощущение, что вы меня поучаете. Давно не пользуюсь стационарными компьютерами. Ноутбуки победили.",
         "id": "CGQrTA"
       },
       {
+        "user": `ivanov@example.com`,
         "text": "Совсем немного... Хочу такую же футболку :-)",
         "id": "jtJUHG"
       },
       {
+        "user": `petrov@example.com`,
         "text": "Плюсую, но слишком много буквы!",
         "id": "MK7KW7"
       }

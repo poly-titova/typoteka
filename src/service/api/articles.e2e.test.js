@@ -13,6 +13,7 @@ const { HttpCode } = require(`../../constants`);
 
 const mockData = [
   {
+    "user": `ivanov@example.com`,
     "id": "-_KcI6",
     "title": "Самый лучший музыкальный альбом этого год",
     "createdDate": "2020-10-06 09:51:02",
@@ -25,12 +26,14 @@ const mockData = [
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": "Согласен с автором!",
         "id": "aFaVn9"
       }
     ]
   },
   {
+    "user": `petrov@example.com`,
     "id": "_PnXaf",
     "title": "Рок — это протест",
     "createdDate": "2020-10-04 19:00:41",
@@ -43,20 +46,24 @@ const mockData = [
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": "Мне не нравится ваш стиль. Ощущение, что вы меня поучаете. Мне кажется или я уже читал это где-то? Планируете записать видосик на эту тему?",
         "id": "Umcuok"
       },
       {
+        "user": `petrov@example.com`,
         "text": "Планируете записать видосик на эту тему?",
         "id": "_afP_9"
       },
       {
+        "user": `ivanov@example.com`,
         "text": "Мне не нравится ваш стиль. Ощущение, что вы меня поучаете. Давно не пользуюсь стационарными компьютерами. Ноутбуки победили. Планируете записать видосик на эту тему?",
         "id": "x7vQDa"
       }
     ]
   },
   {
+    "user": `ivanov@example.com`,
     "id": "-A8qxG",
     "title": "Как начать программировать",
     "createdDate": "2020-11-01 04:49:09",
@@ -67,16 +74,19 @@ const mockData = [
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": "Планируете записать видосик на эту тему? Совсем немного... Мне кажется или я уже читал это где-то?",
         "id": "pwz2mC"
       },
       {
+        "user": `ivanov@example.com`,
         "text": "Мне кажется или я уже читал это где-то?",
         "id": "aAp5_K"
       }
     ]
   },
   {
+    "user": `petrov@example.com`,
     "id": "FXf7Xi",
     "title": "Борьба с прокрастинацией",
     "createdDate": "2020-09-22 20:29:34",
@@ -90,12 +100,14 @@ const mockData = [
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": "Согласен с автором! Планируете записать видосик на эту тему?",
         "id": "bFYhJ7"
       }
     ]
   },
   {
+    "user": `ivanov@example.com`,
     "id": "HIW7kx",
     "title": "Ёлки. История деревьев",
     "createdDate": "2020-09-30 18:50:32",
@@ -107,18 +119,22 @@ const mockData = [
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": "Согласен с автором!",
         "id": "XNTA49"
       },
       {
+        "user": `ivanov@example.com`,
         "text": "Хочу такую же футболку :-)",
         "id": "Es7Edw"
       },
       {
+        "user": `petrov@example.com`,
         "text": "Совсем немного... Это где ж такие красоты?",
         "id": "pZRbqy"
       },
       {
+        "user": `ivanov@example.com`,
         "text": "Согласен с автором!",
         "id": "Ng8hvA"
       }
@@ -347,8 +363,8 @@ test(`API refuses to delete non-existent comment`, () => {
 test(`When field type is wrong response code is 400`, async () => {
 
   const badArticles = [
-    {...newArticle, picture: 12345},
-    {...newArticle, category: `Котики`}
+    { ...newArticle, picture: 12345 },
+    { ...newArticle, category: `Котики` }
   ];
   for (const badArticle of badArticles) {
     await request(app)
@@ -360,8 +376,8 @@ test(`When field type is wrong response code is 400`, async () => {
 
 test(`When field value is wrong response code is 400`, async () => {
   const badArticles = [
-    {...newArticle, title: `too short`},
-    {...newArticle, categories: []}
+    { ...newArticle, title: `too short` },
+    { ...newArticle, categories: [] }
   ];
   for (const badArticle of badArticles) {
     await request(app)
