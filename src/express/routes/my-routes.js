@@ -3,6 +3,8 @@
 const { Router } = require(`express`);
 const myRoutes = new Router();
 const api = require(`../api`).getAPI();
+const auth = require(`../middlewares/auth`);
+myRoutes.use(auth);
 
 myRoutes.get(`/`, async (req, res) => {
   const { user } = req.session;

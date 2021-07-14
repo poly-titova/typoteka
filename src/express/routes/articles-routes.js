@@ -3,6 +3,8 @@
 const { Router } = require(`express`);
 const articlesRoutes = new Router();
 const api = require(`../api`).getAPI();
+const auth = require(`../middlewares/auth`);
+const { ensureArray } = require(`../../utils`);
 const { changeDateFormat, ensureArray } = require(`../../utils`);
 
 const multer = require(`multer`);
@@ -29,14 +31,14 @@ articlesRoutes.get(`/category/:id`, (req, res) => {
   res.render(`articles-by-category`, { user });
 });
 
-articlesRoutes.get(`/add`, async (req, res) => {
+articlesRoutes.get(`/add`, auth, async (req, res) => {
   const { error } = req.query;
   const { user } = req.session;
   const categories = await api.getCategories();
   res.render(`new-post`, { categories, error, user });
 });
 
-articlesRoutes.post(`/add`, upload.single(`avatar`), async (req, res) => {
+articlesRoutes.post(`/add`, auth, upload.single(`avatar`), async (req, res) => {
   const { body } = req;
   const { user } = req.session;
   const articleData = {
@@ -56,7 +58,7 @@ articlesRoutes.post(`/add`, upload.single(`avatar`), async (req, res) => {
   }
 });
 
-articlesRoutes.get(`/edit/:id`, async (req, res) => {
+articlesRoutes.get(`/edit/:id`, auth, async (req, res) => {
   const { id } = req.params;
   const { error } = req.query;
   const { user } = req.session;
@@ -67,7 +69,7 @@ articlesRoutes.get(`/edit/:id`, async (req, res) => {
   res.render(`edit-post`, { id, article, categories, error, user });
 });
 
-articlesRoutes.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+articlesRoutes.post(`/edit/:id`, auth, upload.single(`avatar`), async (req, res) => {
   const { body, file } = req;
   const { id } = req.params;
   const { user } = req.session;
@@ -96,7 +98,7 @@ articlesRoutes.get(`/:id`, async (req, res) => {
   res.render(`articles/post`, { article, id, user, error });
 });
 
-articlesRoutes.post(`/:id/comments`, async (req, res) => {
+articlesRoutes.post(`/:id/comments`, auth, async (req, res) => {
   const { id } = req.params;
   const { user } = req.session;
   const { comment } = req.body;
