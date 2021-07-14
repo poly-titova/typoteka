@@ -56,7 +56,26 @@ mainRoutes.post(`/register`, upload.single(`avatar`), async (req, res) => {
   }
 });
 
-mainRoutes.get(`/login`, (req, res) => res.render(`login`));
+mainRoutes.get(`/login`, (req, res) => {
+  const { error } = req.query;
+  res.render(`login`, { error });
+});
+
+mainRoutes.post(`/login`, async (req, res) => {
+  try {
+    const user = await api.auth(req.body[`user-email`], req.body[`user-password`]);
+    req.session.user = user;
+    res.redirect(`/`);
+  } catch (error) {
+    res.redirect(`/login?error=${encodeURIComponent(error.response.data)}`);
+  }
+});
+
+mainRoutes.get(`/logout`, (req, res) => {
+  delete req.session.user;
+  res.redirect(`/`);
+});
+
 mainRoutes.get(`/search`, async (req, res) => {
   try {
     const { search } = req.query;
